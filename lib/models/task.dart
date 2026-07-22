@@ -16,4 +16,15 @@ abstract class Task {
     print("Date limite: ${date?.toString()}");
     print("Terminée ?: $isCompleted");
   }
+
+    Map<String, dynamic> taskToJson() {
+    return {
+      "type": type,
+      "id": id,
+      "title": title,
+      "priority": priority.name,
+      "date": date?.toString(),
+      "isCompleted": isCompleted,
+    };
+  }
 }
