@@ -1,5 +1,9 @@
+import 'package:todo_list/enums/priority.dart';
+import 'package:todo_list/exceptions/task_format.dart';
 import 'package:todo_list/exceptions/task_not_found.dart';
+import 'package:todo_list/models/normal_task.dart';
 import 'package:todo_list/models/task.dart';
+import 'package:todo_list/models/urgent_task.dart';
 import 'package:todo_list/repositories/repository.dart';
 
 class TaskRepository extends Repository<Task> {
@@ -15,7 +19,9 @@ class TaskRepository extends Repository<Task> {
     try {
       return _tasks.firstWhere((task) => task.id == id);
     } on StateError {
-      throw TaskNotFoundException("IMPOSSIBLE: La tâche avec l'id $id est introuvable.");
+      throw TaskNotFoundException(
+        "IMPOSSIBLE: La tâche avec l'id $id est introuvable.",
+      );
     }
   }
 
@@ -40,5 +46,32 @@ class TaskRepository extends Repository<Task> {
     }
 
     _tasks[index] = element;
+  }
+
+  Task jsonToTask(Map<String, dynamic> json) {
+    final priority = Priority.values.firstWhere(
+      (p) => p.name == (json["priority"] as String),
+    );
+    final date = json["date"] == null
+        ? null
+        : DateTime.parse(json["date"] as String);
+
+    if (json["type"] == "normal") {
+      return NormalTask(
+        json["id"] as int,
+        json["title"] as String,
+        priority,
+        date,
+      );
+    } else if (json["type"] == "urgent") {
+      return UrgentTask(
+        json["id"] as int,
+        json["title"] as String,
+        priority,
+        date,
+      );
+    } else {
+      throw TaskFormatException("Le type de tâche n'existe pas.");
+    }
   }
 }
