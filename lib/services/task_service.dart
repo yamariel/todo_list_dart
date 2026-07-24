@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:todo_list/enums/priority.dart';
 import 'package:todo_list/exceptions/task_not_found.dart';
+import 'package:todo_list/interfaces/task_action.dart';
 import 'package:todo_list/models/normal_task.dart';
 import 'package:todo_list/models/task.dart';
 import 'package:todo_list/models/urgent_task.dart';
 import 'package:todo_list/repositories/task_repository.dart';
 
-class TaskService {
+class TaskService implements TaskAction{
+  @override
   Future<void> createTask(TaskRepository repository) async {
     print(
       "Quel type de tâche vous voulez crée ?:\n 1. Tâche normale\n 2. Tâche urgente",
@@ -51,6 +53,7 @@ class TaskService {
     await repository.saveToFile('tasks.json');
   }
 
+  @override
   List<Task> listTasks(TaskRepository repository) {
     List<Task> tasks = repository.showAll();
     if (tasks.isEmpty) {
@@ -63,6 +66,7 @@ class TaskService {
     return tasks;
   }
 
+  @override
   Future<void> deleteTask(TaskRepository repository) async {
     print("Entrez l'id de la tâche:");
     final taskId = int.tryParse(stdin.readLineSync() ?? '');
@@ -78,6 +82,7 @@ class TaskService {
     }
   }
 
+  @override
   Future<void> completeTask(TaskRepository repository) async {
     print("Entrez l'id de la tâche:");
     final id = int.tryParse(stdin.readLineSync() ?? '');
