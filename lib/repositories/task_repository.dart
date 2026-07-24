@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:todo_list/enums/priority.dart';
 import 'package:todo_list/exceptions/task_format.dart';
 import 'package:todo_list/exceptions/task_not_found.dart';
@@ -32,8 +35,9 @@ class TaskRepository extends Repository<Task> {
 
   @override
   void delete(int id) {
-    findById(id);
+    final name = findById(id).title;
     _tasks.removeWhere((task) => task.id == id);
+    print("Tâche '$name' supprimée");
   }
 
   @override
@@ -62,6 +66,7 @@ class TaskRepository extends Repository<Task> {
         json["title"] as String,
         priority,
         date,
+        isCompleted: json["isCompleted"] as bool,
       );
     } else if (json["type"] == "urgent") {
       return UrgentTask(
@@ -69,9 +74,57 @@ class TaskRepository extends Repository<Task> {
         json["title"] as String,
         priority,
         date,
+        isCompleted: json["isCompleted"] as bool,
       );
     } else {
       throw TaskFormatException("Le type de tâche n'existe pas.");
     }
   }
+
+  Future<void> saveToFile(String filePath) async {
+    final file = File(filePath);
+
+    try {
+      final tasksJson = _tasks.map((task) => task.taskToJson()).toList();
+
+      const encoder = JsonEncoder.withIndent('  ');
+      final jsonString = encoder.convert(tasksJson);
+
+      await file.writeAsString(jsonString);
+    } catch (e) {
+      print("Erreur lors de la sauvegarde des tâches : $e");
+    }
+  }
+
+  Future<void> loadFromFile(String filePath) async {
+    final file = File(filePath);
+    _tasks.clear();
+
+    try {
+      if (!await file.exists()) {
+        return;
+      }
+
+      final content = await file.readAsString();
+
+      if (content.isEmpty) {
+        return;
+      }
+
+      final List<dynamic> jsonTasks = jsonDecode(content);
+
+      for (var json in jsonTasks) {
+        _tasks.add(jsonToTask(json));
+      }
+    } catch (e) {
+      print("Erreur lors du chargement des tâches : $e");
+    }
+  }
+
+  // int nextId() {
+  //   if (_tasks.isEmpty) {
+  //     return 1;
+  //   }
+  //   return _tasks.last.id + 1;
+  // }
 }
