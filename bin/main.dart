@@ -1,6 +1,7 @@
 import 'package:todo_list/repositories/task_repository.dart';
 import 'package:todo_list/services/task_service.dart';
 import 'package:todo_list/services/user_choise.dart';
+import 'package:todo_list/interfaces/task_action.dart';
 
 Future<void> main() async {
   print("Application CLI de gestion de tâches");
@@ -8,7 +9,7 @@ Future<void> main() async {
   final repository = TaskRepository();
   await repository.loadFromFile("tasks.json");
 
-  final service = TaskService();
+  TaskAction service = TaskService();
   final menu = UserChoise();
 
   int choice;
@@ -18,7 +19,7 @@ Future<void> main() async {
 
     switch (choice) {
       case 1:
-        await service.createTask(repository);
+        service.createTask(repository);
         break;
 
       case 2:
@@ -26,11 +27,11 @@ Future<void> main() async {
         break;
 
       case 3:
-        await service.completeTask(repository);
+        service.completeTask(repository);
         break;
 
       case 4:
-        await service.deleteTask(repository);
+        service.deleteTask(repository);
         break;
 
       case 0:
