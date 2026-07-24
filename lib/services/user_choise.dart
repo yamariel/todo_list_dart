@@ -8,7 +8,13 @@ class UserChoise {
     print('4. Supprimer une tâche');
     print('0. Quitter\n');
     print('Votre choix :');
-    int choise = int.tryParse(stdin.readLineSync() ?? '') ?? 1;
-    return choise;
+    final choice = int.tryParse(stdin.readLineSync() ?? '');
+
+    if (choice == null) {
+      print("Veuillez entrer un nombre.");
+      return -1;
+    }
+
+    return choice;
   }
 }
