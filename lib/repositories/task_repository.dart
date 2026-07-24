@@ -121,10 +121,10 @@ class TaskRepository extends Repository<Task> {
     }
   }
 
-  // int nextId() {
-  //   if (_tasks.isEmpty) {
-  //     return 1;
-  //   }
-  //   return _tasks.last.id + 1;
-  // }
+  int nextId() {
+    if (_tasks.isEmpty) {
+      return 1;
+    }
+    return _tasks.last.id + 1;
+  }
 }
