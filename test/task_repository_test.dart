@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:todo_list/exceptions/task_not_found.dart';
 import 'package:todo_list/models/task.dart';
 import 'package:todo_list/models/urgent_task.dart';
 import 'package:todo_list/repositories/task_repository.dart';
@@ -9,7 +10,7 @@ void main() {
   test('Sauvegarde une tâche', () {
     final repository = TaskRepository();
     repository.save(
-      NormalTask(1, "Savegarde Dart", Priority.low, DateTime(2026 - 07 - 25)),
+      NormalTask(1, "Savegarde Dart", Priority.low, DateTime(2026, 7, 25)),
     );
     expect(repository.showAll().length, 1);
   });
@@ -17,7 +18,7 @@ void main() {
   test('Récupérer une tâche via son ID', () {
     final repository = TaskRepository();
     repository.save(
-      NormalTask(2, "Recuperer tâche", Priority.high, DateTime(2026 - 07 - 25)),
+      NormalTask(2, "Recuperer tâche", Priority.high, DateTime(2026, 7, 25)),
     );
     final task = repository.findById(2);
     expect(task.id, 2);
@@ -29,14 +30,14 @@ void main() {
       1,
       "Tâche normal",
       Priority.high,
-      DateTime(2026 - 07 - 25),
+      DateTime(2026,07,25),
     );
     repository.save(tasks);
     tasks = UrgentTask(
       2,
       "Tâche urgent",
       Priority.medium,
-      DateTime(2026 - 07 - 25),
+      DateTime(2026,07,25),
     );
     repository.save(tasks);
     expect(repository.showAll().length, 2);
@@ -49,24 +50,32 @@ void main() {
         3,
         "Supprimé tâche",
         Priority.medium,
-        DateTime(2026 - 07 - 25),
+        DateTime(2026,07,25),
       ),
     );
     repository.delete(3);
-    expect(repository.showAll().isEmpty, true);
+    expect(repository.showAll().isEmpty, isEmpty);
   });
 
-  test('Modifié une tâche via son ID', () {
+  test('Modifier une tâche via son ID', () {
     final repository = TaskRepository();
     final task = NormalTask(
       4,
       "Supprimé tâche",
       Priority.high,
-      DateTime(2026 - 07 - 25),
+      DateTime(2026,07,25),
     );
     repository.save(task);
     task.isCompleted = true;
     repository.update(task);
     expect(repository.findById(4).isCompleted, true);
   });
+
+  // test('Lever une exception', () {
+  //   final repository = TaskRepository();
+  //   expect(
+  //     () => repository.findById(100),
+  //     throwsA(isA<TaskNotFoundException>()),
+  //   );
+  // });
 }
