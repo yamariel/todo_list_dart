@@ -14,7 +14,7 @@ abstract class Task {
     print("Titre: $title");
     print("Priorité: ${priority.name}");
     print("Date limite: ${date?.toString()}");
-    print("Terminée ?: $isCompleted");
+    print("Terminée ?: $isCompleted\n");
   }
 
     Map<String, dynamic> taskToJson() {
