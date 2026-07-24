@@ -71,11 +71,11 @@ void main() {
     expect(repository.findById(4).isCompleted, true);
   });
 
-  // test('Lever une exception', () {
-  //   final repository = TaskRepository();
-  //   expect(
-  //     () => repository.findById(100),
-  //     throwsA(isA<TaskNotFoundException>()),
-  //   );
-  // });
+  test('Lever une exception', () {
+    final repository = TaskRepository();
+    expect(
+      () => repository.findById(100),
+      throwsA(isA<TaskNotFoundException>()),
+    );
+  });
 }
